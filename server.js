@@ -78,10 +78,19 @@ app.post("/api/admin/metadata", requireAdmin, async (req, res) => {
     if (!publicId.startsWith("afterdark/highlights/")) return res.status(400).json({ error: "Invalid highlight." });
     const data = toContext(req.body);
     if (!data.title) return res.status(400).json({ error: "Enter a match title." });
-    await cloudinary.api.update(publicId, { context: contextString(data) });
+    await cloudinary.api.update(publicId, {
+      resource_type: "video",
+      type: "upload",
+      context: contextString(data)
+    });
     res.json({ ok: true });
   } catch (error) {
-    console.error("Metadata update error:", error.message);
+    console.error("Metadata update error:", {
+      message: error.message,
+      http_code: error.http_code,
+      name: error.name,
+      error: error.error?.message
+    });
     res.status(502).json({ error: "Could not save match details. Check the Cloudinary asset and try again." });
   }
 });
