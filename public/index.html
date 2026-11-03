@@ -1,112 +1,553 @@
+
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#080d18">
 <meta name="description" content="AFTERDARK — watch the moments that matter. Sports highlights streamed from Cloudinary.">
 <title>AFTERDARK — Sports Highlights</title>
+
 <style>
-:root{--bg:#080d18;--panel:#101a2b;--panel2:#142239;--lime:#c8ff38;--blue:#58b9ff;--muted:#9aa9bd;--white:#f5f8fc;--line:#25344b}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 75% -15%,#1c3151 0,transparent 40%),var(--bg);color:var(--white);font:16px/1.5 Inter,system-ui,Segoe UI,Arial,sans-serif}
-a{color:inherit;text-decoration:none}.wrap{width:min(1160px,92%);margin:auto}
-header{height:76px;border-bottom:1px solid #ffffff12;display:flex;align-items:center;position:sticky;top:0;background:#080d18eF;backdrop-filter:blur(14px);z-index:5}
-.nav{display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font-weight:950;letter-spacing:.13em;font-size:1.35rem}.brand b{color:var(--lime)}.links{display:flex;gap:26px;color:#c4cede;font-size:.9rem}.links a:hover{color:var(--lime)}
-.pill{border:1px solid #40516a;border-radius:99px;padding:9px 16px;font-size:.85rem;font-weight:700}.pill:hover{border-color:var(--lime);color:var(--lime)}
-.hero{padding:76px 0 58px;display:grid;grid-template-columns:1.05fr .95fr;gap:35px;align-items:center}.eyebrow{color:var(--lime);font-size:.75rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase}.hero h1{font-size:clamp(3rem,7vw,5.8rem);line-height:.94;letter-spacing:-.065em;margin:18px 0}.hero h1 span{color:var(--lime)}.hero p{color:var(--muted);max-width:540px;font-size:1.05rem}.hero-art{min-height:340px;border-radius:24px;overflow:hidden;position:relative;background:linear-gradient(135deg,#172b48,#0a111e);border:1px solid #ffffff18;display:flex;align-items:end;padding:28px}.hero-art:before{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#050a13 0%,transparent 70%),url('https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=85') center/cover;opacity:.8}.hero-art>*{position:relative}.hero-tag{background:var(--lime);color:#101709;border-radius:5px;padding:5px 9px;font-size:.7rem;font-weight:950;letter-spacing:.1em}
-.section-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin:18px 0 22px}.section-head h2{font-size:1.8rem;letter-spacing:-.04em;margin:4px 0}.section-head p{color:var(--muted);margin:0;font-size:.9rem}
-.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}.controls input,.controls select,.admin input{background:#0e1726;border:1px solid var(--line);border-radius:10px;color:var(--white);padding:12px 14px;font:inherit;outline:none}.controls input{flex:1;min-width:180px}.controls input:focus,.admin input:focus{border-color:var(--lime)}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.video-card{background:var(--panel);border:1px solid #ffffff12;border-radius:16px;overflow:hidden;transition:.2s}.video-card:hover{transform:translateY(-4px);border-color:#c8ff3866}.thumb{aspect-ratio:16/9;background:#17243a;position:relative}.thumb video{width:100%;height:100%;object-fit:cover;display:block}.thumb .play{position:absolute;inset:0;display:grid;place-items:center;background:#0002;font-size:2.4rem;text-shadow:0 2px 10px #000}.card-body{padding:15px}.card-body h3{font-size:1rem;margin:0 0 5px}.meta{font-size:.78rem;color:var(--muted);display:flex;justify-content:space-between;gap:10px}.empty{grid-column:1/-1;border:1px dashed #40516a;border-radius:16px;padding:40px;text-align:center;color:var(--muted)}
-.notice{margin:28px 0 70px;background:linear-gradient(110deg,#14243b,#0e1726);border:1px solid #ffffff12;border-radius:18px;padding:22px;display:flex;justify-content:space-between;gap:20px;align-items:center}.notice strong{display:block;font-size:1.1rem}.notice span{color:var(--muted);font-size:.88rem}
-footer{border-top:1px solid #ffffff12;padding:28px 0;color:var(--muted);font-size:.82rem}.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
-.admin{display:none;margin:0 0 70px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px}.admin.show{display:block}.admin form{display:flex;gap:10px;flex-wrap:wrap}.admin input{min-width:0;flex:1}.admin button,.btn{border:0;border-radius:10px;background:var(--lime);color:#11190b;font-weight:900;padding:12px 18px;cursor:pointer}.admin button.secondary{background:#25344b;color:white}.admin small{color:var(--muted);display:block;margin-top:10px}.status{color:var(--lime);font-size:.9rem;margin-top:12px;min-height:1.4em}
-@media(max-width:850px){.hero{grid-template-columns:1fr;padding-top:50px}.hero-art{min-height:250px}.grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:560px){.links{display:none}.grid{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.notice{align-items:start;flex-direction:column}.hero h1{font-size:3.5rem}}
+:root{
+ --bg:#080d18;
+ --panel:#101a2b;
+ --panel2:#142239;
+ --lime:#c8ff38;
+ --blue:#58b9ff;
+ --muted:#9aa9bd;
+ --white:#f5f8fc;
+ --line:#25344b
+}
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:radial-gradient(ellipse at 75% -15%,#1c3151 0,transparent 40%),var(--bg);
+ color:var(--white);
+ font:16px/1.5 Inter,system-ui,Segoe UI,Arial,sans-serif
+}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(1160px,92%);margin:auto}
+header{
+ height:76px;
+ border-bottom:1px solid #ffffff12;
+ display:flex;
+ align-items:center;
+ position:sticky;
+ top:0;
+ background:#080d18ef;
+ backdrop-filter:blur(14px);
+ z-index:5
+}
+.nav{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:20px
+}
+.brand{font-weight:950;letter-spacing:.13em;font-size:1.35rem}
+.brand b{color:var(--lime)}
+.links{display:flex;gap:26px;color:#c4cede;font-size:.9rem}
+.links a:hover{color:var(--lime)}
+.pill{
+ border:1px solid #40516a;
+ border-radius:99px;
+ padding:9px 16px;
+ font-size:.85rem;
+ font-weight:700
+}
+.pill:hover{border-color:var(--lime);color:var(--lime)}
+.hero{
+ padding:76px 0 58px;
+ display:grid;
+ grid-template-columns:1.05fr .95fr;
+ gap:35px;
+ align-items:center
+}
+.eyebrow{
+ color:var(--lime);
+ font-size:.75rem;
+ font-weight:900;
+ letter-spacing:.2em;
+ text-transform:uppercase
+}
+.hero h1{
+ font-size:clamp(3rem,7vw,5.8rem);
+ line-height:.94;
+ letter-spacing:-.065em;
+ margin:18px 0
+}
+.hero h1 span{color:var(--lime)}
+.hero p{color:var(--muted);max-width:540px;font-size:1.05rem}
+.hero-art{
+ min-height:340px;
+ border-radius:24px;
+ overflow:hidden;
+ position:relative;
+ background:linear-gradient(135deg,#172b48,#0a111e);
+ border:1px solid #ffffff18;
+ display:flex;
+ align-items:end;
+ padding:28px
+}
+.hero-art:before{
+ content:"";
+ position:absolute;
+ inset:0;
+ background:linear-gradient(0deg,#050a13 0%,transparent 70%),url('https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=85') center/cover;
+ opacity:.8
+}
+.hero-art>*{position:relative}
+.hero-tag{
+ background:var(--lime);
+ color:#101709;
+ border-radius:5px;
+ padding:5px 9px;
+ font-size:.7rem;
+ font-weight:950;
+ letter-spacing:.1em
+}
+.section-head{
+ display:flex;
+ justify-content:space-between;
+ align-items:end;
+ gap:16px;
+ margin:18px 0 22px
+}
+.section-head h2{font-size:1.8rem;letter-spacing:-.04em;margin:4px 0}
+.section-head p{color:var(--muted);margin:0;font-size:.9rem}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.controls input,.controls select,.admin input{
+ background:#0e1726;
+ border:1px solid var(--line);
+ border-radius:10px;
+ color:var(--white);
+ padding:12px 14px;
+ font:inherit;
+ outline:none
+}
+.controls input{flex:1;min-width:180px}
+.controls input:focus,.admin input:focus{border-color:var(--lime)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.video-card{
+ background:var(--panel);
+ border:1px solid #ffffff12;
+ border-radius:16px;
+ overflow:hidden;
+ transition:.2s
+}
+.video-card:hover{transform:translateY(-4px);border-color:#c8ff3866}
+.thumb{
+ aspect-ratio:16/9;
+ background:#17243a;
+ position:relative
+}
+.thumb video{
+ width:100%;
+ height:100%;
+ object-fit:contain;
+ display:block;
+ background:#000
+}
+.card-body{padding:15px}
+.card-body h3{font-size:1rem;margin:0 0 5px}
+.meta{
+ font-size:.78rem;
+ color:var(--muted);
+ display:flex;
+ justify-content:space-between;
+ gap:10px
+}
+.empty{
+ grid-column:1/-1;
+ border:1px dashed #40516a;
+ border-radius:16px;
+ padding:40px;
+ text-align:center;
+ color:var(--muted)
+}
+.notice{
+ margin:28px 0 70px;
+ background:linear-gradient(110deg,#14243b,#0e1726);
+ border:1px solid #ffffff12;
+ border-radius:18px;
+ padding:22px;
+ display:flex;
+ justify-content:space-between;
+ gap:20px;
+ align-items:center
+}
+.notice strong{display:block;font-size:1.1rem}
+.notice span{color:var(--muted);font-size:.88rem}
+footer{
+ border-top:1px solid #ffffff12;
+ padding:28px 0;
+ color:var(--muted);
+ font-size:.82rem
+}
+.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.admin{
+ display:none;
+ margin:0 0 70px;
+ background:var(--panel);
+ border:1px solid var(--line);
+ border-radius:18px;
+ padding:22px
+}
+.admin.show{display:block}
+.admin form{display:flex;gap:10px;flex-wrap:wrap}
+.admin input{min-width:0;flex:1}
+.admin button,.btn{
+ border:0;
+ border-radius:10px;
+ background:var(--lime);
+ color:#11190b;
+ font-weight:900;
+ padding:12px 18px;
+ cursor:pointer
+}
+.admin button.secondary{background:#25344b;color:white}
+.admin small{color:var(--muted);display:block;margin-top:10px}
+.status{color:var(--lime);font-size:.9rem;margin-top:12px;min-height:1.4em}
+@media(max-width:850px){
+ .hero{grid-template-columns:1fr;padding-top:50px}
+ .hero-art{min-height:250px}
+ .grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:560px){
+ .links{display:none}
+ .grid{grid-template-columns:1fr}
+ .section-head{align-items:start;flex-direction:column}
+ .notice{align-items:start;flex-direction:column}
+ .hero h1{font-size:3.5rem}
+}
 </style>
+
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.6.13/dist/hls.min.js"></script>
 </head>
+
 <body>
-<header><div class="wrap nav"><a class="brand" href="#">AFTER<b>DARK</b></a><nav class="links"><a href="#highlights">Highlights</a><a href="#about">About</a></nav><a class="pill" href="#highlights">WATCH NOW ↗</a></div></header>
+<header>
+ <div class="wrap nav">
+  <a class="brand" href="#">AFTER<b>DARK</b></a>
+  <nav class="links">
+   <a href="#highlights">Highlights</a>
+   <a href="#about">About</a>
+  </nav>
+  <a class="pill" href="#highlights">WATCH NOW ↗</a>
+ </div>
+</header>
+
 <main class="wrap">
 <section class="hero">
- <div><div class="eyebrow">THE GAME. THE MOMENT. THE REPLAY.</div><h1>DON'T MISS<br><span>THE MOMENT.</span></h1><p>Big plays, last-minute winners and moments worth watching again. Your home for sports highlights.</p><a class="btn" href="#highlights" style="display:inline-block;margin-top:14px">Explore highlights ↘</a></div>
- <div class="hero-art"><div><span class="hero-tag">AFTERDARK ORIGINAL</span><h2 style="font-size:2rem;line-height:1.05;margin:13px 0 0">THE ACTION<br>DOESN'T STOP.</h2></div></div>
+ <div>
+  <div class="eyebrow">THE GAME. THE MOMENT. THE REPLAY.</div>
+  <h1>DON'T MISS<br><span>THE MOMENT.</span></h1>
+  <p>Big plays, last-minute winners and moments worth watching again. Your home for sports highlights.</p>
+  <a class="btn" href="#highlights" style="display:inline-block;margin-top:14px">Explore highlights ↘</a>
+ </div>
+ <div class="hero-art">
+  <div>
+   <span class="hero-tag">AFTERDARK ORIGINAL</span>
+   <h2 style="font-size:2rem;line-height:1.05;margin:13px 0 0">THE ACTION<br>DOESN'T STOP.</h2>
+  </div>
+ </div>
 </section>
+
 <section id="highlights">
- <div class="section-head"><div><div class="eyebrow">FRESH FROM THE FIELD</div><h2>Latest highlights</h2><p>Watch instantly — no account or sign-in required.</p></div><span class="pill" id="count">LOADING…</span></div>
- <div class="controls"><input id="search" type="search" placeholder="Search highlights…"><select id="sort"><option value="new">Newest first</option><option value="old">Oldest first</option></select></div>
- <div class="grid" id="videoGrid"><div class="empty">Loading highlights from Cloudinary…</div></div>
+ <div class="section-head">
+  <div>
+   <div class="eyebrow">FRESH FROM THE FIELD</div>
+   <h2>Latest highlights</h2>
+   <p>Watch instantly — no account or sign-in required.</p>
+  </div>
+  <span class="pill" id="count">LOADING…</span>
+ </div>
+
+ <div class="controls">
+  <input id="search" type="search" placeholder="Search highlights…">
+  <select id="sort">
+   <option value="new">Newest first</option>
+   <option value="old">Oldest first</option>
+  </select>
+ </div>
+
+ <div class="grid" id="videoGrid">
+  <div class="empty">Loading highlights from Cloudinary…</div>
+ </div>
 </section>
-<section class="notice" id="about"><div><strong>Made for the moments you replay.</strong><span>AFTERDARK streams public highlights from Cloudinary's video delivery network.</span></div><a class="pill" href="#highlights">Back to highlights ↑</a></section>
+
+<section class="notice" id="about">
+ <div>
+  <strong>Made for the moments you replay.</strong>
+  <span>AFTERDARK streams public highlights from Cloudinary's video delivery network.</span>
+ </div>
+ <a class="pill" href="#highlights">Back to highlights ↑</a>
+</section>
+
 <section class="admin" id="admin">
- <div class="eyebrow">PRIVATE ADMIN AREA</div><h2 style="margin:5px 0 12px">Manage highlights</h2>
- <div id="loginArea"><p style="color:var(--muted)">Sign in with your admin password to upload a video. Viewers do not need this password.</p><form id="loginForm"><input id="password" type="password" placeholder="Admin password" autocomplete="current-password" required><button>Sign in</button></form></div>
- <div id="uploadArea" hidden><form id="uploadForm"><input id="videoFile" type="file" accept="video/*" required><button id="uploadButton">Upload highlight</button><button type="button" class="secondary" id="logout">Sign out</button></form><small>Upload only videos you own or have permission to share. Large files may take time to upload.</small></div>
+ <div class="eyebrow">PRIVATE ADMIN AREA</div>
+ <h2 style="margin:5px 0 12px">Manage highlights</h2>
+
+ <div id="loginArea">
+  <p style="color:var(--muted)">Sign in with your admin password to upload a video. Viewers do not need this password.</p>
+  <form id="loginForm">
+   <input id="password" type="password" placeholder="Admin password" autocomplete="current-password" required>
+   <button>Sign in</button>
+  </form>
+ </div>
+
+ <div id="uploadArea" hidden>
+  <form id="uploadForm">
+   <input id="videoFile" type="file" accept="video/*" required>
+   <button id="uploadButton">Upload highlight</button>
+   <button type="button" class="secondary" id="logout">Sign out</button>
+  </form>
+  <small>Upload only videos you own or have permission to share. Large files may take time to upload.</small>
+ </div>
+
  <div class="status" id="status" role="status"></div>
 </section>
 </main>
-<footer><div class="wrap foot"><span>© <span id="year"></span> AFTERDARK. All highlights, all action.</span><a href="#admin" id="adminLink">Admin</a></div></footer>
+
+<footer>
+ <div class="wrap foot">
+  <span>© <span id="year"></span> AFTERDARK. All highlights, all action.</span>
+  <a href="#admin" id="adminLink">Admin</a>
+ </div>
+</footer>
+
 <script>
-const grid=document.getElementById("videoGrid"), search=document.getElementById("search"), sort=document.getElementById("sort");
+const grid=document.getElementById("videoGrid");
+const search=document.getElementById("search");
+const sort=document.getElementById("sort");
 let allVideos=[];
+
 document.getElementById("year").textContent=new Date().getFullYear();
-function prettyDate(value){return new Date(value).toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"});}
-function attachAdaptivePlayers(){
- document.querySelectorAll("video[data-hls]").forEach(video=>{
-  const hlsUrl=video.dataset.hls;
-  const mp4Url=video.dataset.mp4;
-  if(video.dataset.playerReady) return;
-  video.dataset.playerReady="1";
-  // Safari and some mobile browsers support HLS natively.
-  if(video.canPlayType("application/vnd.apple.mpegurl")){
-   video.src=hlsUrl;
-  } else if(window.Hls && Hls.isSupported()){
-   const hls=new Hls({enableWorker:true, capLevelToPlayerSize:true});
-   hls.loadSource(hlsUrl); hls.attachMedia(video);
-   hls.on(Hls.Events.ERROR,(_event,data)=>{
-    if(data.fatal){hls.destroy();video.src=mp4Url;}
-   });
-  } else {
-   video.src=mp4Url;
-  }
+
+function prettyDate(value){
+ return new Date(value).toLocaleDateString(undefined,{
+  day:"numeric",
+  month:"short",
+  year:"numeric"
  });
 }
+
+/* MP4 is tried first for broad browser compatibility.
+   HLS is used if MP4 playback fails. */
+function attachAdaptivePlayers(){
+ document.querySelectorAll("video[data-hls]").forEach(video=>{
+  if(video.dataset.playerReady) return;
+  video.dataset.playerReady="1";
+
+  const hlsUrl=video.dataset.hls;
+  const mp4Url=video.dataset.mp4;
+
+  video.src=mp4Url;
+  video.load();
+
+  video.addEventListener("error",function(){
+   if(video.dataset.triedHls) return;
+   video.dataset.triedHls="1";
+
+   if(window.Hls && Hls.isSupported()){
+    video.removeAttribute("src");
+    video.load();
+
+    const hls=new Hls();
+    hls.loadSource(hlsUrl);
+    hls.attachMedia(video);
+
+    hls.on(Hls.Events.ERROR,(_event,data)=>{
+     if(data.fatal){
+      hls.destroy();
+     }
+    });
+   }else if(video.canPlayType("application/vnd.apple.mpegurl")){
+    video.src=hlsUrl;
+    video.load();
+   }
+  },{once:true});
+ });
+}
+
+function escapeHtml(s){
+ return String(s).replace(/[&<>"']/g,c=>({
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#39;"
+ }[c]));
+}
+
 function render(){
  const term=search.value.trim().toLowerCase();
- let list=allVideos.filter(v=>v.title.toLowerCase().includes(term));
- list.sort((a,b)=>sort.value==="new"?new Date(b.createdAt)-new Date(a.createdAt):new Date(a.createdAt)-new Date(b.createdAt));
+
+ let list=allVideos.filter(v=>
+  String(v.title||"").toLowerCase().includes(term)
+ );
+
+ list.sort((a,b)=>
+  sort.value==="new"
+   ? new Date(b.createdAt)-new Date(a.createdAt)
+   : new Date(a.createdAt)-new Date(b.createdAt)
+ );
+
  document.getElementById("count").textContent=`${list.length} VIDEOS`;
- if(!list.length){grid.innerHTML='<div class="empty">No highlights yet. Check back soon.</div>';return;}
- grid.innerHTML=list.map(v=>`<article class="video-card"><div class="thumb"><video controls preload="none" playsinline data-hls="${escapeHtml(v.hlsUrl)}" data-mp4="${escapeHtml(v.mp4Url)}" controlsList="nodownload"></video></div><div class="card-body"><h3>${escapeHtml(v.title)}</h3><div class="meta"><span>ADAPTIVE HD STREAM</span><span>${prettyDate(v.createdAt)}</span></div></div></article>`).join("");
+
+ if(!list.length){
+  grid.innerHTML='<div class="empty">No highlights yet. Check back soon.</div>';
+  return;
+ }
+
+ grid.innerHTML=list.map(v=>`
+  <article class="video-card">
+   <div class="thumb">
+    <video
+     controls
+     preload="metadata"
+     playsinline
+     data-hls="${escapeHtml(v.hlsUrl)}"
+     data-mp4="${escapeHtml(v.mp4Url)}"
+     controlsList="nodownload"
+    ></video>
+   </div>
+   <div class="card-body">
+    <h3>${escapeHtml(v.title)}</h3>
+    <div class="meta">
+     <span>HD VIDEO</span>
+     <span>${prettyDate(v.createdAt)}</span>
+    </div>
+   </div>
+  </article>
+ `).join("");
+
  attachAdaptivePlayers();
 }
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+
 async function loadVideos(){
- try{const r=await fetch("/api/videos");if(!r.ok)throw new Error("Unable to reach video library");const data=await r.json();allVideos=data.videos||[];render();}
- catch(e){grid.innerHTML='<div class="empty">Highlights could not load right now. Please refresh in a moment.</div>';document.getElementById("count").textContent="OFFLINE";}
+ try{
+  const r=await fetch("/api/videos");
+  if(!r.ok) throw new Error("Unable to reach video library");
+
+  const data=await r.json();
+  allVideos=data.videos||[];
+  render();
+ }catch(e){
+  console.error("Video library error:",e);
+  grid.innerHTML='<div class="empty">Highlights could not load right now. Please refresh in a moment.</div>';
+  document.getElementById("count").textContent="OFFLINE";
+ }
 }
-search.addEventListener("input",render);sort.addEventListener("change",render);loadVideos();
+
+search.addEventListener("input",render);
+sort.addEventListener("change",render);
+loadVideos();
 
 const admin=document.getElementById("admin");
-document.getElementById("adminLink").addEventListener("click",e=>{e.preventDefault();admin.classList.toggle("show");admin.scrollIntoView({behavior:"smooth"});});
-const statusEl=document.getElementById("status"), loginArea=document.getElementById("loginArea"), uploadArea=document.getElementById("uploadArea");
-document.getElementById("loginForm").addEventListener("submit",async e=>{
- e.preventDefault();statusEl.textContent="Signing in…";
- try{const r=await fetch("/api/admin/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:document.getElementById("password").value})});const d=await r.json();if(!r.ok)throw new Error(d.error);loginArea.hidden=true;uploadArea.hidden=false;statusEl.textContent="Signed in. You can upload a highlight.";}
- catch(err){statusEl.textContent=err.message;}
+document.getElementById("adminLink").addEventListener("click",e=>{
+ e.preventDefault();
+ admin.classList.toggle("show");
+ admin.scrollIntoView({behavior:"smooth"});
 });
-document.getElementById("logout").addEventListener("click",async()=>{await fetch("/api/admin/logout",{method:"POST"});loginArea.hidden=false;uploadArea.hidden=true;statusEl.textContent="Signed out.";});
-document.getElementById("uploadForm").addEventListener("submit",async e=>{
- e.preventDefault();const file=document.getElementById("videoFile").files[0];if(!file)return;
- if(!file.type.startsWith("video/")){statusEl.textContent="Choose a video file.";return;}
- const button=document.getElementById("uploadButton");button.disabled=true;statusEl.textContent="Preparing secure upload…";
+
+const statusEl=document.getElementById("status");
+const loginArea=document.getElementById("loginArea");
+const uploadArea=document.getElementById("uploadArea");
+
+document.getElementById("loginForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ statusEl.textContent="Signing in…";
+
  try{
-  const sr=await fetch("/api/admin/sign-upload",{method:"POST"});const sig=await sr.json();if(!sr.ok)throw new Error(sig.error);
-  const form=new FormData();form.append("file",file);form.append("api_key",sig.apiKey);form.append("timestamp",sig.timestamp);form.append("folder",sig.folder);form.append("signature",sig.signature);
+  const r=await fetch("/api/admin/login",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({
+    password:document.getElementById("password").value
+   })
+  });
+
+  const d=await r.json();
+  if(!r.ok) throw new Error(d.error||"Sign-in failed.");
+
+  loginArea.hidden=true;
+  uploadArea.hidden=false;
+  statusEl.textContent="Signed in. You can upload a highlight.";
+ }catch(err){
+  statusEl.textContent=err.message;
+ }
+});
+
+document.getElementById("logout").addEventListener("click",async()=>{
+ try{
+  await fetch("/api/admin/logout",{method:"POST"});
+ }catch(err){
+  console.error("Sign-out error:",err);
+ }
+
+ loginArea.hidden=false;
+ uploadArea.hidden=true;
+ statusEl.textContent="Signed out.";
+});
+
+document.getElementById("uploadForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+
+ const file=document.getElementById("videoFile").files[0];
+ if(!file) return;
+
+ if(!file.type.startsWith("video/")){
+  statusEl.textContent="Choose a video file.";
+  return;
+ }
+
+ const button=document.getElementById("uploadButton");
+ button.disabled=true;
+ statusEl.textContent="Preparing secure upload…";
+
+ try{
+  const sr=await fetch("/api/admin/sign-upload",{
+   method:"POST"
+  });
+
+  const sig=await sr.json();
+  if(!sr.ok) throw new Error(sig.error||"Could not prepare secure upload.");
+
+  const form=new FormData();
+  form.append("file",file);
+  form.append("api_key",sig.apiKey);
+  form.append("timestamp",sig.timestamp);
+  form.append("folder",sig.folder);
+  form.append("signature",sig.signature);
+
   statusEl.textContent="Uploading to Cloudinary… please keep this page open.";
-  const up=await fetch(`https://api.cloudinary.com/v1_1/${sig.cloudName}/video/upload`,{method:"POST",body:form});const result=await up.json();if(!up.ok)throw new Error(result.error?.message||"Cloudinary upload failed.");
-  statusEl.textContent="Upload complete. Adding it to the public highlights…";document.getElementById("videoFile").value="";await loadVideos();statusEl.textContent="Published. Your viewers can watch it without signing in.";
- }catch(err){statusEl.textContent=err.message;}
- finally{button.disabled=false;}
+
+  const up=await fetch(
+   `https://api.cloudinary.com/v1_1/${sig.cloudName}/video/upload`,
+   {method:"POST",body:form}
+  );
+
+  const result=await up.json();
+
+  if(!up.ok){
+   throw new Error(result.error?.message||"Cloudinary upload failed.");
+  }
+
+  statusEl.textContent="Upload complete. Adding it to the public highlights…";
+  document.getElementById("videoFile").value="";
+
+  await loadVideos();
+
+  statusEl.textContent="Published. Your viewers can watch it without signing in.";
+ }catch(err){
+  console.error("Upload error:",err);
+  statusEl.textContent=err.message;
+ }finally{
+  button.disabled=false;
+ }
 });
 </script>
-</body></html>
+</body>
+</html>
