@@ -70,3 +70,16 @@ Send the public site URL to your viewers. The gallery is public and requires no 
 - **Upload says unauthorized:** sign in again; the admin session lasts up to 8 hours.
 - **Upload fails:** check Cloudinary's response and account usage/limits; confirm the API key and secret belong to the same Cloudinary environment.
 - **Videos over 100 MB:** this starter uses a normal browser upload request. A chunked/resumable upload flow should be added for very large files or unstable connections.
+
+
+## Match titles, competitions and thumbnails
+
+- The upload form pre-fills the match title from the video filename. Edit it before publishing; the app does not guess teams or match facts from video pixels.
+- Select a European domestic league or a UEFA/international competition and optionally enter the home team, away team and match date.
+- If no custom thumbnail is uploaded, AFTERDARK generates a thumbnail from approximately the second second of the video.
+- Admins can edit a published highlight's title, teams, competition and match date, and replace its thumbnail from the public gallery after signing in.
+- Search matches title, home team, away team and competition. The competition selector filters the gallery and works together with search.
+- Match details are stored as Cloudinary asset context, so they remain available after Render restarts. Custom thumbnail images are stored in `afterdark/thumbnails`.
+- Existing uploads will initially appear with a cleaned-up filename and `Uncategorised`. Sign in as admin, open **Edit details / thumbnail** on each card, and save its match information.
+
+The competition list includes the major European top flights and a broad selection of other UEFA-member domestic leagues, plus UEFA club competitions and international tournaments. League names are editable in the upload and edit forms.

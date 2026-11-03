@@ -127,6 +127,16 @@ header{
  outline:none
 }
 .controls input{flex:1;min-width:180px}
+.controls select,.admin select{background:#0e1726;border:1px solid var(--line);border-radius:10px;color:var(--white);padding:12px 14px;font:inherit}
+.admin form>*{min-width:180px}
+.file-label{color:var(--muted);font-size:.85rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb video{position:relative;opacity:1;pointer-events:auto;object-fit:contain}
+.league-tag{display:inline-block;color:var(--lime);font-size:.68rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px}
+.card-actions{margin-top:12px}
+.card-actions button{background:#25344b;color:white;border:0;border-radius:8px;padding:8px 11px;cursor:pointer}
+.edit-panel{display:grid;gap:8px;margin-top:12px}
+.edit-panel input,.edit-panel select{width:100%;min-width:0!important}
 .controls input:focus,.admin input:focus{border-color:var(--lime)}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .video-card{
@@ -266,9 +276,42 @@ footer{
 
  <div class="controls">
   <input id="search" type="search" placeholder="Search highlights…">
-  <select id="sort">
-   <option value="new">Newest first</option>
-   <option value="old">Oldest first</option>
+  <select id="leagueFilter" aria-label="Filter by league">
+   <option value="">All competitions</option>
+   <optgroup label="European domestic leagues">
+    <option>Premier League</option><option>La Liga</option><option>Bundesliga</option>
+    <option>Serie A</option><option>Ligue 1</option><option>Eredivisie</option>
+    <option>Primeira Liga</option><option>Belgian Pro League</option><option>Turkish Süper Lig</option>
+    <option>Scottish Premiership</option><option>Austrian Bundesliga</option><option>Swiss Super League</option>
+    <option>Greek Super League</option><option>Danish Superliga</option><option>Norwegian Eliteserien</option>
+    <option>Swedish Allsvenskan</option><option>Other European League</option><option>Russian Premier League</option><option>Albanian Kategoria Superiore</option><option>Armenian Premier League</option><option>Azerbaijan Premier League</option>
+    <option>Belarusian Premier League</option><option>Premier League of Bosnia and Herzegovina</option><option>Bulgarian First League</option>
+    <option>Croatian HNL</option><option>Cypriot First Division</option><option>Czech First League</option><option>Estonian Premium Liiga</option><option>Finnish Veikkausliiga</option>
+    <option>Georgian Erovnuli Liga</option><option>Hungarian NB I</option><option>Icelandic Besta deild</option><option>Irish Premier Division</option>
+    <option>Israeli Premier League</option><option>Kazakhstan Premier League</option><option>Kosovo Superleague</option><option>Latvian Higher League</option>
+    <option>Lithuanian A Lyga</option><option>Luxembourg National Division</option><option>Maltese Premier League</option><option>Moldovan Super Liga</option>
+    <option>Montenegrin First League</option><option>North Macedonian First League</option><option>Northern Ireland Premiership</option>
+    <option>Polish Ekstraklasa</option><option>Romanian Liga I</option><option>San Marino Championship</option><option>Serbian SuperLiga</option>
+    <option>Slovak Super Liga</option><option>Slovenian PrvaLiga</option><option>Ukrainian Premier League</option><option>Welsh Cymru Premier</option>
+    <option>Gibraltar Premier Division</option><option>Faroe Islands Premier League</option><option>Andorran Primera Divisió</option><option>Albanian Kategoria Superiore</option><option>Armenian Premier League</option><option>Azerbaijan Premier League</option>
+    <option>Belarusian Premier League</option><option>Premier League of Bosnia and Herzegovina</option><option>Bulgarian First League</option>
+    <option>Croatian HNL</option><option>Cypriot First Division</option><option>Czech First League</option><option>Estonian Premium Liiga</option><option>Finnish Veikkausliiga</option>
+    <option>Georgian Erovnuli Liga</option><option>Hungarian NB I</option><option>Icelandic Besta deild</option><option>Irish Premier Division</option>
+    <option>Israeli Premier League</option><option>Kazakhstan Premier League</option><option>Kosovo Superleague</option><option>Latvian Higher League</option>
+    <option>Lithuanian A Lyga</option><option>Luxembourg National Division</option><option>Maltese Premier League</option><option>Moldovan Super Liga</option>
+    <option>Montenegrin First League</option><option>North Macedonian First League</option><option>Northern Ireland Premiership</option>
+    <option>Polish Ekstraklasa</option><option>Romanian Liga I</option><option>San Marino Championship</option><option>Serbian SuperLiga</option>
+    <option>Slovak Super Liga</option><option>Slovenian PrvaLiga</option><option>Ukrainian Premier League</option><option>Welsh Cymru Premier</option>
+    <option>Gibraltar Premier Division</option><option>Faroe Islands Premier League</option><option>Andorran Primera Divisió</option>
+   </optgroup>
+   <optgroup label="European & international competitions">
+    <option>UEFA Champions League</option><option>UEFA Europa League</option>
+    <option>UEFA Conference League</option><option>European Championship</option>
+    <option>International Friendly</option><option>World Cup</option><option>Other Competition</option>
+   </optgroup>
+  </select>
+  <select id="sort" aria-label="Sort highlights">
+   <option value="new">Newest first</option><option value="old">Oldest first</option>
   </select>
  </div>
 
@@ -300,10 +343,42 @@ footer{
  <div id="uploadArea" hidden>
   <form id="uploadForm">
    <input id="videoFile" type="file" accept="video/*" required>
+   <input id="matchTitle" type="text" placeholder="Match title (auto-filled from filename)" required>
+   <select id="matchLeague" required>
+    <option value="">Choose league / competition</option>
+    <option>Premier League</option><option>La Liga</option><option>Bundesliga</option><option>Serie A</option><option>Ligue 1</option>
+    <option>Eredivisie</option><option>Primeira Liga</option><option>Belgian Pro League</option><option>Turkish Süper Lig</option>
+    <option>Scottish Premiership</option><option>Austrian Bundesliga</option><option>Swiss Super League</option><option>Greek Super League</option>
+    <option>Danish Superliga</option><option>Norwegian Eliteserien</option><option>Swedish Allsvenskan</option><option>Other European League</option><option>Russian Premier League</option><option>Albanian Kategoria Superiore</option><option>Armenian Premier League</option><option>Azerbaijan Premier League</option>
+    <option>Belarusian Premier League</option><option>Premier League of Bosnia and Herzegovina</option><option>Bulgarian First League</option>
+    <option>Croatian HNL</option><option>Cypriot First Division</option><option>Czech First League</option><option>Estonian Premium Liiga</option><option>Finnish Veikkausliiga</option>
+    <option>Georgian Erovnuli Liga</option><option>Hungarian NB I</option><option>Icelandic Besta deild</option><option>Irish Premier Division</option>
+    <option>Israeli Premier League</option><option>Kazakhstan Premier League</option><option>Kosovo Superleague</option><option>Latvian Higher League</option>
+    <option>Lithuanian A Lyga</option><option>Luxembourg National Division</option><option>Maltese Premier League</option><option>Moldovan Super Liga</option>
+    <option>Montenegrin First League</option><option>North Macedonian First League</option><option>Northern Ireland Premiership</option>
+    <option>Polish Ekstraklasa</option><option>Romanian Liga I</option><option>San Marino Championship</option><option>Serbian SuperLiga</option>
+    <option>Slovak Super Liga</option><option>Slovenian PrvaLiga</option><option>Ukrainian Premier League</option><option>Welsh Cymru Premier</option>
+    <option>Gibraltar Premier Division</option><option>Faroe Islands Premier League</option><option>Andorran Primera Divisió</option><option>Albanian Kategoria Superiore</option><option>Armenian Premier League</option><option>Azerbaijan Premier League</option>
+    <option>Belarusian Premier League</option><option>Premier League of Bosnia and Herzegovina</option><option>Bulgarian First League</option>
+    <option>Croatian HNL</option><option>Cypriot First Division</option><option>Czech First League</option><option>Estonian Premium Liiga</option><option>Finnish Veikkausliiga</option>
+    <option>Georgian Erovnuli Liga</option><option>Hungarian NB I</option><option>Icelandic Besta deild</option><option>Irish Premier Division</option>
+    <option>Israeli Premier League</option><option>Kazakhstan Premier League</option><option>Kosovo Superleague</option><option>Latvian Higher League</option>
+    <option>Lithuanian A Lyga</option><option>Luxembourg National Division</option><option>Maltese Premier League</option><option>Moldovan Super Liga</option>
+    <option>Montenegrin First League</option><option>North Macedonian First League</option><option>Northern Ireland Premiership</option>
+    <option>Polish Ekstraklasa</option><option>Romanian Liga I</option><option>San Marino Championship</option><option>Serbian SuperLiga</option>
+    <option>Slovak Super Liga</option><option>Slovenian PrvaLiga</option><option>Ukrainian Premier League</option><option>Welsh Cymru Premier</option>
+    <option>Gibraltar Premier Division</option><option>Faroe Islands Premier League</option><option>Andorran Primera Divisió</option>
+    <option>UEFA Champions League</option><option>UEFA Europa League</option><option>UEFA Conference League</option>
+    <option>European Championship</option><option>International Friendly</option><option>World Cup</option><option>Other Competition</option>
+   </select>
+   <input id="homeTeam" type="text" placeholder="Home team">
+   <input id="awayTeam" type="text" placeholder="Away team">
+   <input id="matchDate" type="date" aria-label="Match date">
+   <label class="file-label">Custom thumbnail (optional) <input id="thumbnailFile" type="file" accept="image/png,image/jpeg,image/webp"></label>
    <button id="uploadButton">Upload highlight</button>
    <button type="button" class="secondary" id="logout">Sign out</button>
   </form>
-  <small>Upload only videos you own or have permission to share. Large files may take time to upload.</small>
+  <small>Titles are prefilled from the filename. Add the teams and competition so viewers can search accurately. If you skip a custom thumbnail, AFTERDARK generates one from the video. Upload only footage you have permission to share.</small>
  </div>
 
  <div class="status" id="status" role="status"></div>
@@ -318,236 +393,97 @@ footer{
 </footer>
 
 <script>
-const grid=document.getElementById("videoGrid");
-const search=document.getElementById("search");
-const sort=document.getElementById("sort");
-let allVideos=[];
-
+const grid=document.getElementById("videoGrid"), search=document.getElementById("search");
+const sort=document.getElementById("sort"), leagueFilter=document.getElementById("leagueFilter");
+let allVideos=[], isAdmin=false;
 document.getElementById("year").textContent=new Date().getFullYear();
-
-function prettyDate(value){
- return new Date(value).toLocaleDateString(undefined,{
-  day:"numeric",
-  month:"short",
-  year:"numeric"
- });
-}
-
-/* MP4 is tried first for broad browser compatibility.
-   HLS is used if MP4 playback fails. */
+function prettyDate(value){if(!value)return "";const d=new Date(value+"T00:00:00");return isNaN(d)?value:d.toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"});}
+function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function slugTitle(filename){return filename.replace(/\.[^.]+$/,"").replace(/[_-]+/g," ").replace(/\s+/g," ").trim().replace(/\b\w/g,c=>c.toUpperCase());}
 function attachAdaptivePlayers(){
  document.querySelectorAll("video[data-hls]").forEach(video=>{
-  if(video.dataset.playerReady) return;
-  video.dataset.playerReady="1";
-
-  const hlsUrl=video.dataset.hls;
-  const mp4Url=video.dataset.mp4;
-
-  video.src=mp4Url;
-  video.load();
-
+  if(video.dataset.playerReady)return;video.dataset.playerReady="1";
+  video.src=video.dataset.mp4;video.load();
   video.addEventListener("error",function(){
-   if(video.dataset.triedHls) return;
-   video.dataset.triedHls="1";
-
-   if(window.Hls && Hls.isSupported()){
-    video.removeAttribute("src");
-    video.load();
-
-    const hls=new Hls();
-    hls.loadSource(hlsUrl);
-    hls.attachMedia(video);
-
-    hls.on(Hls.Events.ERROR,(_event,data)=>{
-     if(data.fatal){
-      hls.destroy();
-     }
-    });
-   }else if(video.canPlayType("application/vnd.apple.mpegurl")){
-    video.src=hlsUrl;
-    video.load();
-   }
+   if(video.dataset.triedHls)return;video.dataset.triedHls="1";
+   if(window.Hls&&Hls.isSupported()){video.removeAttribute("src");video.load();const hls=new Hls();hls.loadSource(video.dataset.hls);hls.attachMedia(video);}
+   else if(video.canPlayType("application/vnd.apple.mpegurl")){video.src=video.dataset.hls;video.load();}
   },{once:true});
  });
 }
-
-function escapeHtml(s){
- return String(s).replace(/[&<>"']/g,c=>({
-  "&":"&amp;",
-  "<":"&lt;",
-  ">":"&gt;",
-  '"':"&quot;",
-  "'":"&#39;"
- }[c]));
-}
-
 function render(){
- const term=search.value.trim().toLowerCase();
-
- let list=allVideos.filter(v=>
-  String(v.title||"").toLowerCase().includes(term)
- );
-
- list.sort((a,b)=>
-  sort.value==="new"
-   ? new Date(b.createdAt)-new Date(a.createdAt)
-   : new Date(a.createdAt)-new Date(b.createdAt)
- );
-
+ const term=search.value.trim().toLowerCase(), league=leagueFilter.value;
+ let list=allVideos.filter(v=>{
+  const hay=[v.title,v.home,v.away,v.league,`${v.home} vs ${v.away}`,`${v.away} vs ${v.home}`].join(" ").toLowerCase();
+  return (!term||hay.includes(term))&&(!league||v.league===league);
+ });
+ list.sort((a,b)=>sort.value==="new"?new Date(b.createdAt)-new Date(a.createdAt):new Date(a.createdAt)-new Date(b.createdAt));
  document.getElementById("count").textContent=`${list.length} VIDEOS`;
-
- if(!list.length){
-  grid.innerHTML='<div class="empty">No highlights yet. Check back soon.</div>';
-  return;
- }
-
- grid.innerHTML=list.map(v=>`
-  <article class="video-card">
-   <div class="thumb">
-    <video
-     controls
-     preload="metadata"
-     playsinline
-     data-hls="${escapeHtml(v.hlsUrl)}"
-     data-mp4="${escapeHtml(v.mp4Url)}"
-     controlsList="nodownload"
-    ></video>
-   </div>
-   <div class="card-body">
-    <h3>${escapeHtml(v.title)}</h3>
-    <div class="meta">
-     <span>HD VIDEO</span>
-     <span>${prettyDate(v.createdAt)}</span>
-    </div>
-   </div>
-  </article>
- `).join("");
-
+ if(!list.length){grid.innerHTML='<div class="empty">No matching highlights. Try another team, match or competition.</div>';return;}
+ grid.innerHTML=list.map((v,i)=>`
+ <article class="video-card">
+  <div class="thumb">
+   <video controls preload="none" playsinline poster="${escapeHtml(v.thumbnailUrl)}" data-hls="${escapeHtml(v.hlsUrl)}" data-mp4="${escapeHtml(v.mp4Url)}" controlsList="nodownload"></video>
+  </div>
+  <div class="card-body">
+   <div class="league-tag">${escapeHtml(v.league||"Uncategorised")}</div>
+   <h3>${escapeHtml(v.title)}</h3>
+   <div class="meta"><span>${escapeHtml([v.home,v.away].filter(Boolean).join(" vs ")||"HD VIDEO")}</span><span>${prettyDate(v.matchDate)||prettyDate(v.createdAt)}</span></div>
+   ${isAdmin?`<div class="card-actions"><button type="button" onclick="toggleEdit('${encodeURIComponent(v.publicId)}')">Edit details / thumbnail</button><div class="edit-panel" id="edit-${i}" hidden>
+    <input id="title-${i}" value="${escapeHtml(v.title)}" placeholder="Match title">
+    <input id="home-${i}" value="${escapeHtml(v.home)}" placeholder="Home team">
+    <input id="away-${i}" value="${escapeHtml(v.away)}" placeholder="Away team">
+    <select id="league-${i}">${leagueOptions(v.league)}</select>
+    <input id="date-${i}" type="date" value="${escapeHtml(v.matchDate)}">
+    <label>Replace thumbnail <input id="thumb-${i}" type="file" accept="image/png,image/jpeg,image/webp"></label>
+    <button type="button" onclick="saveEdit(${i},'${encodeURIComponent(v.publicId)}')">Save changes</button>
+   </div></div>`:""}
+  </div>
+ </article>`).join("");
  attachAdaptivePlayers();
 }
-
-async function loadVideos(){
- try{
-  const r=await fetch("/api/videos");
-  if(!r.ok) throw new Error("Unable to reach video library");
-
-  const data=await r.json();
-  allVideos=data.videos||[];
-  render();
- }catch(e){
-  console.error("Video library error:",e);
-  grid.innerHTML='<div class="empty">Highlights could not load right now. Please refresh in a moment.</div>';
-  document.getElementById("count").textContent="OFFLINE";
- }
+function leagueOptions(selected){const vals=["Premier League","La Liga","Bundesliga","Serie A","Ligue 1","Eredivisie","Primeira Liga","Belgian Pro League","Turkish Süper Lig","Scottish Premiership","Austrian Bundesliga","Swiss Super League","Greek Super League","Danish Superliga","Norwegian Eliteserien","Swedish Allsvenskan","Other European League","Russian Premier League","Estonian Premium Liiga","Albanian Kategoria Superiore","Armenian Premier League","Azerbaijan Premier League","Belarusian Premier League","Premier League of Bosnia and Herzegovina","Bulgarian First League","Croatian HNL","Cypriot First Division","Czech First League","Finnish Veikkausliiga","Georgian Erovnuli Liga","Hungarian NB I","Icelandic Besta deild","Irish Premier Division","Israeli Premier League","Kazakhstan Premier League","Kosovo Superleague","Latvian Higher League","Lithuanian A Lyga","Luxembourg National Division","Maltese Premier League","Moldovan Super Liga","Montenegrin First League","North Macedonian First League","Northern Ireland Premiership","Polish Ekstraklasa","Romanian Liga I","San Marino Championship","Serbian SuperLiga","Slovak Super Liga","Slovenian PrvaLiga","Ukrainian Premier League","Welsh Cymru Premier","Gibraltar Premier Division","Faroe Islands Premier League","Andorran Primera Divisió","UEFA Champions League","UEFA Europa League","UEFA Conference League","European Championship","International Friendly","World Cup","Other Competition"];return '<option value="">Choose competition</option>'+vals.map(x=>`<option ${x===selected?"selected":""}>${x}</option>`).join("");}
+async function loadVideos(){try{const r=await fetch("/api/videos");if(!r.ok)throw Error("Unable to reach video library");allVideos=(await r.json()).videos||[];render();}catch(e){console.error(e);grid.innerHTML='<div class="empty">Highlights could not load right now. Please refresh in a moment.</div>';document.getElementById("count").textContent="OFFLINE";}}
+search.addEventListener("input",render);sort.addEventListener("change",render);leagueFilter.addEventListener("change",render);loadVideos();
+const admin=document.getElementById("admin"),statusEl=document.getElementById("status"),loginArea=document.getElementById("loginArea"),uploadArea=document.getElementById("uploadArea");
+document.getElementById("adminLink").addEventListener("click",e=>{e.preventDefault();admin.classList.toggle("show");admin.scrollIntoView({behavior:"smooth"});});
+document.getElementById("loginForm").addEventListener("submit",async e=>{e.preventDefault();statusEl.textContent="Signing in…";try{const r=await fetch("/api/admin/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:document.getElementById("password").value})});const d=await r.json();if(!r.ok)throw Error(d.error||"Sign-in failed.");isAdmin=true;loginArea.hidden=true;uploadArea.hidden=false;render();statusEl.textContent="Signed in. You can upload and edit highlights.";}catch(err){statusEl.textContent=err.message;}});
+document.getElementById("logout").addEventListener("click",async()=>{await fetch("/api/admin/logout",{method:"POST"});isAdmin=false;loginArea.hidden=false;uploadArea.hidden=true;render();statusEl.textContent="Signed out.";});
+document.getElementById("videoFile").addEventListener("change",e=>{const f=e.target.files[0];if(f&&!document.getElementById("matchTitle").value)document.getElementById("matchTitle").value=slugTitle(f.name);});
+async function signedUpload(file,kind){
+ const endpoint=kind==="image"?"/api/admin/sign-thumbnail":"/api/admin/sign-upload";
+ const sr=await fetch(endpoint,{method:"POST"}),sig=await sr.json();if(!sr.ok)throw Error(sig.error||"Could not prepare upload.");
+ const form=new FormData();form.append("file",file);form.append("api_key",sig.apiKey);form.append("timestamp",sig.timestamp);form.append("folder",sig.folder);form.append("signature",sig.signature);
+ const up=await fetch(`https://api.cloudinary.com/v1_1/${sig.cloudName}/${kind==="image"?"image":"video"}/upload`,{method:"POST",body:form});
+ const result=await up.json();if(!up.ok)throw Error(result.error?.message||"Cloudinary upload failed.");return result;
 }
-
-search.addEventListener("input",render);
-sort.addEventListener("change",render);
-loadVideos();
-
-const admin=document.getElementById("admin");
-document.getElementById("adminLink").addEventListener("click",e=>{
- e.preventDefault();
- admin.classList.toggle("show");
- admin.scrollIntoView({behavior:"smooth"});
-});
-
-const statusEl=document.getElementById("status");
-const loginArea=document.getElementById("loginArea");
-const uploadArea=document.getElementById("uploadArea");
-
-document.getElementById("loginForm").addEventListener("submit",async e=>{
- e.preventDefault();
- statusEl.textContent="Signing in…";
-
- try{
-  const r=await fetch("/api/admin/login",{
-   method:"POST",
-   headers:{"Content-Type":"application/json"},
-   body:JSON.stringify({
-    password:document.getElementById("password").value
-   })
-  });
-
-  const d=await r.json();
-  if(!r.ok) throw new Error(d.error||"Sign-in failed.");
-
-  loginArea.hidden=true;
-  uploadArea.hidden=false;
-  statusEl.textContent="Signed in. You can upload a highlight.";
- }catch(err){
-  statusEl.textContent=err.message;
- }
-});
-
-document.getElementById("logout").addEventListener("click",async()=>{
- try{
-  await fetch("/api/admin/logout",{method:"POST"});
- }catch(err){
-  console.error("Sign-out error:",err);
- }
-
- loginArea.hidden=false;
- uploadArea.hidden=true;
- statusEl.textContent="Signed out.";
-});
-
+async function saveMetadata(publicId,data){const r=await fetch("/api/admin/metadata",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({publicId,...data})});const d=await r.json();if(!r.ok)throw Error(d.error||"Could not save match details.");}
 document.getElementById("uploadForm").addEventListener("submit",async e=>{
- e.preventDefault();
-
- const file=document.getElementById("videoFile").files[0];
- if(!file) return;
-
- if(!file.type.startsWith("video/")){
-  statusEl.textContent="Choose a video file.";
-  return;
- }
-
- const button=document.getElementById("uploadButton");
- button.disabled=true;
- statusEl.textContent="Preparing secure upload…";
-
+ e.preventDefault();const file=document.getElementById("videoFile").files[0];if(!file)return;
+ const button=document.getElementById("uploadButton");button.disabled=true;
  try{
-  const sr=await fetch("/api/admin/sign-upload",{
-   method:"POST"
-  });
-
-  const sig=await sr.json();
-  if(!sr.ok) throw new Error(sig.error||"Could not prepare secure upload.");
-
-  const form=new FormData();
-  form.append("file",file);
-  form.append("api_key",sig.apiKey);
-  form.append("timestamp",sig.timestamp);
-  form.append("folder",sig.folder);
-  form.append("signature",sig.signature);
-
-  statusEl.textContent="Uploading to Cloudinary… please keep this page open.";
-
-  const up=await fetch(
-   `https://api.cloudinary.com/v1_1/${sig.cloudName}/video/upload`,
-   {method:"POST",body:form}
-  );
-
-  const result=await up.json();
-
-  if(!up.ok){
-   throw new Error(result.error?.message||"Cloudinary upload failed.");
-  }
-
-  statusEl.textContent="Upload complete. Adding it to the public highlights…";
-  document.getElementById("videoFile").value="";
-
-  await loadVideos();
-
-  statusEl.textContent="Published. Your viewers can watch it without signing in.";
- }catch(err){
-  console.error("Upload error:",err);
-  statusEl.textContent=err.message;
- }finally{
-  button.disabled=false;
- }
+  const title=document.getElementById("matchTitle").value.trim(),league=document.getElementById("matchLeague").value;
+  if(!title||!league)throw Error("Enter a title and choose a competition.");
+  statusEl.textContent="Uploading video to Cloudinary…";
+  const video=await signedUpload(file,"video");
+  let thumbnailUrl="";
+  const thumb=document.getElementById("thumbnailFile").files[0];
+  if(thumb){statusEl.textContent="Uploading custom thumbnail…";const image=await signedUpload(thumb,"image");thumbnailUrl=image.secure_url;}
+  await saveMetadata(video.public_id,{title,league,home:document.getElementById("homeTeam").value,away:document.getElementById("awayTeam").value,matchDate:document.getElementById("matchDate").value,thumbnailUrl});
+  e.target.reset();await loadVideos();statusEl.textContent="Published. Match details saved and thumbnail ready.";
+ }catch(err){console.error(err);statusEl.textContent=err.message;}
+ finally{button.disabled=false;}
 });
+window.toggleEdit=id=>{const v=allVideos.find(x=>x.publicId===decodeURIComponent(id));if(!v)return;const i=allVideos.indexOf(v);const panel=document.getElementById("edit-"+i);panel.hidden=!panel.hidden;};
+window.saveEdit=async(i,encodedId)=>{
+ const publicId=decodeURIComponent(encodedId),v=allVideos.find(x=>x.publicId===publicId);if(!v)return;
+ try{
+  let thumbnailUrl=v.thumbnailUrl;const file=document.getElementById("thumb-"+i).files[0];
+  if(file){statusEl.textContent="Uploading replacement thumbnail…";const image=await signedUpload(file,"image");thumbnailUrl=image.secure_url;}
+  await saveMetadata(publicId,{title:document.getElementById("title-"+i).value,home:document.getElementById("home-"+i).value,away:document.getElementById("away-"+i).value,league:document.getElementById("league-"+i).value,matchDate:document.getElementById("date-"+i).value,thumbnailUrl});
+  statusEl.textContent="Highlight details updated.";await loadVideos();
+ }catch(err){statusEl.textContent=err.message;}
+};
 </script>
 </body>
 </html>

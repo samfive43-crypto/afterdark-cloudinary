@@ -11,7 +11,6 @@ if (missing.length) {
   console.error("Missing environment variables:", missing.join(", "));
   process.exit(1);
 }
-
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -27,85 +26,93 @@ app.use(session({
   secret: process.env.SESSION_SECRET || crypto.randomBytes(32).toString("hex"),
   resave: false,
   saveUninitialized: false,
-  cookie: {
-    httpOnly: true,
-    sameSite: "strict",
-    secure: process.env.COOKIE_SECURE !== "false",
-    maxAge: 8 * 60 * 60 * 1000
-  }
+  cookie: { httpOnly: true, sameSite: "strict", secure: process.env.COOKIE_SECURE !== "false", maxAge: 8 * 60 * 60 * 1000 }
 }));
 app.use(express.static(path.join(__dirname, "public")));
 
-const requireAdmin = (req, res, next) => {
-  if (req.session && req.session.isAdmin) return next();
-  return res.status(401).json({ error: "Please sign in to the upload dashboard." });
-};
+const requireAdmin = (req, res, next) => req.session?.isAdmin
+  ? next()
+  : res.status(401).json({ error: "Please sign in to the upload dashboard." });
+
+const clean = (value, max = 180) => String(value || "").trim().slice(0, max);
+const toContext = (data) => ({
+  title: clean(data.title),
+  league: clean(data.league, 100),
+  home: clean(data.home, 100),
+  away: clean(data.away, 100),
+  matchDate: clean(data.matchDate, 30),
+  thumbnailUrl: clean(data.thumbnailUrl, 1000)
+});
+const contextString = (data) => Object.entries(data)
+  .filter(([, value]) => value)
+  .map(([key, value]) => `${key}=${String(value).replace(/[|=]/g, " ")}`)
+  .join("|");
 
 app.post("/api/admin/login", (req, res) => {
-  const password = String(req.body.password || "");
-  const expected = process.env.ADMIN_PASSWORD;
-  const a = Buffer.from(password);
-  const b = Buffer.from(expected);
-  const valid = a.length === b.length && crypto.timingSafeEqual(a, b);
-  if (!valid) return res.status(401).json({ error: "Incorrect password." });
+  const a = Buffer.from(String(req.body.password || ""));
+  const b = Buffer.from(process.env.ADMIN_PASSWORD);
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return res.status(401).json({ error: "Incorrect password." });
   req.session.isAdmin = true;
   res.json({ ok: true });
 });
+app.post("/api/admin/logout", requireAdmin, (req, res) => req.session.destroy(() => res.json({ ok: true })));
 
-app.post("/api/admin/logout", requireAdmin, (req, res) => {
-  req.session.destroy(() => res.json({ ok: true }));
-});
-
-// The browser receives a short-lived upload signature, never the API secret.
+// Short-lived signatures for browser-to-Cloudinary uploads. The API secret stays on the server.
 app.post("/api/admin/sign-upload", requireAdmin, (req, res) => {
   const timestamp = Math.floor(Date.now() / 1000);
   const folder = "afterdark/highlights";
-  const signature = cloudinary.utils.api_sign_request(
-    { timestamp, folder },
-    process.env.CLOUDINARY_API_SECRET
-  );
-  res.json({
-    cloudName: process.env.CLOUDINARY_CLOUD_NAME,
-    apiKey: process.env.CLOUDINARY_API_KEY,
-    timestamp,
-    folder,
-    signature
-  });
+  const signature = cloudinary.utils.api_sign_request({ timestamp, folder }, process.env.CLOUDINARY_API_SECRET);
+  res.json({ cloudName: process.env.CLOUDINARY_CLOUD_NAME, apiKey: process.env.CLOUDINARY_API_KEY, timestamp, folder, signature });
+});
+app.post("/api/admin/sign-thumbnail", requireAdmin, (req, res) => {
+  const timestamp = Math.floor(Date.now() / 1000);
+  const folder = "afterdark/thumbnails";
+  const signature = cloudinary.utils.api_sign_request({ timestamp, folder }, process.env.CLOUDINARY_API_SECRET);
+  res.json({ cloudName: process.env.CLOUDINARY_CLOUD_NAME, apiKey: process.env.CLOUDINARY_API_KEY, timestamp, folder, signature });
 });
 
-// Only publicly delivered videos in the AFTERDARK highlights folder are listed.
+// Save editable match details against the Cloudinary video. This survives Render restarts/redeploys.
+app.post("/api/admin/metadata", requireAdmin, async (req, res) => {
+  try {
+    const publicId = clean(req.body.publicId, 500);
+    if (!publicId.startsWith("afterdark/highlights/")) return res.status(400).json({ error: "Invalid highlight." });
+    const data = toContext(req.body);
+    if (!data.title) return res.status(400).json({ error: "Enter a match title." });
+    await cloudinary.api.update(publicId, { context: contextString(data) });
+    res.json({ ok: true });
+  } catch (error) {
+    console.error("Metadata update error:", error.message);
+    res.status(502).json({ error: "Could not save match details. Check the Cloudinary asset and try again." });
+  }
+});
+
 app.get("/api/videos", async (_req, res) => {
   try {
     const result = await cloudinary.api.resources({
-      resource_type: "video",
-      type: "upload",
-      prefix: "afterdark/highlights/",
-      max_results: 100
+      resource_type: "video", type: "upload", prefix: "afterdark/highlights/",
+      max_results: 100, context: true
     });
-    const videos = (result.resources || []).map((item) => ({
-      publicId: item.public_id,
-      title: (item.public_id.split("/").pop() || "Match highlight")
-        .replace(/[-_]+/g, " ")
-        .replace(/\b\w/g, (c) => c.toUpperCase()),
-      // HLS adaptive stream: Cloudinary creates renditions up to 1080p on demand.
-      hlsUrl: cloudinary.url(item.public_id, {
-        resource_type: "video",
-        streaming_profile: "auto",
-        format: "m3u8",
-        secure: true
-      }),
-      // Compressed MP4 fallback for browsers without HLS support.
-      mp4Url: cloudinary.url(item.public_id, {
-        resource_type: "video",
-        quality: "auto",
-        fetch_format: "auto",
-        secure: true
-      }),
-      createdAt: item.created_at,
-      duration: item.duration || null,
-      width: item.width || null,
-      height: item.height || null
-    })).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    const videos = (result.resources || []).map((item) => {
+      const ctx = item.context?.custom || item.context || {};
+      const fallback = (item.public_id.split("/").pop() || "Match highlight")
+        .replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const thumb = ctx.thumbnailUrl || cloudinary.url(item.public_id, {
+        resource_type: "video", format: "jpg", secure: true,
+        transformation: [{ start_offset: "2" }, { width: 800, height: 450, crop: "fill", quality: "auto" }]
+      });
+      return {
+        publicId: item.public_id,
+        title: ctx.title || fallback,
+        league: ctx.league || "Uncategorised",
+        home: ctx.home || "",
+        away: ctx.away || "",
+        matchDate: ctx.matchDate || "",
+        thumbnailUrl: thumb,
+        hlsUrl: cloudinary.url(item.public_id, { resource_type: "video", streaming_profile: "auto", format: "m3u8", secure: true }),
+        mp4Url: cloudinary.url(item.public_id, { resource_type: "video", quality: "auto", fetch_format: "auto", secure: true }),
+        createdAt: item.created_at, duration: item.duration || null
+      };
+    }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     res.set("Cache-Control", "public, max-age=30");
     res.json({ videos });
   } catch (error) {
@@ -114,9 +121,6 @@ app.get("/api/videos", async (_req, res) => {
   }
 });
 
-app.get("*", (_req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
+app.get("*", (_req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 const port = Number(process.env.PORT || 3000);
 app.listen(port, () => console.log(`AFTERDARK running on port ${port}`));
