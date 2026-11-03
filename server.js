@@ -43,10 +43,24 @@ const toContext = (data) => ({
   matchDate: clean(data.matchDate, 30),
   thumbnailUrl: clean(data.thumbnailUrl, 1000)
 });
+// Encode values as base64url before putting them in Cloudinary context.
+// This avoids Cloudinary interpreting percent escapes in URLs (especially
+// custom thumbnail URLs) as malformed context encoding. Keep the keys simple.
+const encodeContextValue = (value) => Buffer.from(String(value), "utf8").toString("base64url");
+const decodeContextValue = (value) => {
+  if (typeof value !== "string" || !value) return "";
+  try { return Buffer.from(value, "base64url").toString("utf8"); }
+  catch { return ""; }
+};
 const contextString = (data) => Object.entries(data)
   .filter(([, value]) => value)
-  .map(([key, value]) => `${key}=${String(value).replace(/[|=]/g, " ")}`)
+  .map(([key, value]) => `ad_${key}=${encodeContextValue(value)}`)
   .join("|");
+const readContext = (ctx, key) => {
+  // Support metadata saved by older versions as well as the encoded format.
+  const encoded = ctx?.[`ad_${key}`];
+  return encoded ? decodeContextValue(encoded) : (ctx?.[key] || "");
+};
 
 app.post("/api/admin/login", (req, res) => {
   const a = Buffer.from(String(req.body.password || ""));
@@ -89,7 +103,7 @@ app.post("/api/admin/metadata", requireAdmin, async (req, res) => {
       message: error.message,
       http_code: error.http_code,
       name: error.name,
-      error: error.error?.message
+      error: error.error?.message || error.message || String(error)
     });
     res.status(502).json({ error: "Could not save match details. Check the Cloudinary asset and try again." });
   }
@@ -103,19 +117,27 @@ app.get("/api/videos", async (_req, res) => {
     });
     const videos = (result.resources || []).map((item) => {
       const ctx = item.context?.custom || item.context || {};
+      const meta = {
+        title: readContext(ctx, "title"),
+        league: readContext(ctx, "league"),
+        home: readContext(ctx, "home"),
+        away: readContext(ctx, "away"),
+        matchDate: readContext(ctx, "matchDate"),
+        thumbnailUrl: readContext(ctx, "thumbnailUrl")
+      };
       const fallback = (item.public_id.split("/").pop() || "Match highlight")
         .replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-      const thumb = ctx.thumbnailUrl || cloudinary.url(item.public_id, {
+      const thumb = meta.thumbnailUrl || cloudinary.url(item.public_id, {
         resource_type: "video", format: "jpg", secure: true,
         transformation: [{ start_offset: "2" }, { width: 800, height: 450, crop: "fill", quality: "auto" }]
       });
       return {
         publicId: item.public_id,
-        title: ctx.title || fallback,
-        league: ctx.league || "Uncategorised",
-        home: ctx.home || "",
-        away: ctx.away || "",
-        matchDate: ctx.matchDate || "",
+        title: meta.title || fallback,
+        league: meta.league || "Uncategorised",
+        home: meta.home || "",
+        away: meta.away || "",
+        matchDate: meta.matchDate || "",
         thumbnailUrl: thumb,
         hlsUrl: cloudinary.url(item.public_id, { resource_type: "video", streaming_profile: "auto", format: "m3u8", secure: true }),
         mp4Url: cloudinary.url(item.public_id, { resource_type: "video", quality: "auto", fetch_format: "auto", secure: true }),
